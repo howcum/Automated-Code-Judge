@@ -6,9 +6,10 @@ from tkinter import filedialog
 import server
 import sqlite3
 import re
-
+from tkinter import messagebox
 teachers_name = NONE
 now_run_korche=NONE
+TIMETABLE=0
 
 class Application(Frame):
     def __init__(self, master=NONE):
@@ -66,8 +67,13 @@ class Application(Frame):
         self.ProblemCountText = Entry(self.stepOne)
         self.ProblemCountText.pack()
 
+        self.timeLbl=Label(self.stepOne,text="TIME:(In Minute)")
+        self.timeLbl.pack()
+        self.timeText=Entry(self.stepOne)
+        self.timeText.pack()
+
         self.SubmitBtn = Button(self.stepOne, text="Submit!!", command=self.SubmitNow)
-        self.SubmitBtn.pack()
+        self.SubmitBtn.pack(pady=10)
 
 
 
@@ -78,6 +84,8 @@ class Application(Frame):
 
 
     def SubmitNow(self):
+        TIMETABLE=int(self.timeText.get())
+        print(TIMETABLE)
         self.akhon = int(str(self.ProblemCountText.get()))
 
         c_code = str(self.CourseCodeText.get())
@@ -224,7 +232,9 @@ class Application(Frame):
         #self.master.destroy()
         self.conn.commit()
         self.conn.close()
-        server.Main_server(self.CC_ID,self.SS_ID)
+        messagebox.showinfo("title","Session is Running!!!")
+        self.master.destroy()
+        server.Main_server(self.CC_ID,self.SS_ID,TIMETABLE)
 
         pass
 

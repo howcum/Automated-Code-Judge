@@ -121,25 +121,7 @@ class Application(Frame):
         print("do nothing!!")
         pass
 
-            # self.midInleftFrame.StatusLbl=Label(self.midInleftFrame,text="       Unsolved")
-            # self.midInleftFrame.StatusLbl.grid(row=6+i, column=1, sticky=W+E,padx=20,pady=10)
 
-        # self.stepOne = LabelFrame(master, text=" Enter Solution: ")
-        # self.stepOne.grid(row=1, columnspan=7, sticky='W', \
-        #              padx=5, pady=5, ipadx=5, ipady=5)
-        #
-        # self.helpLf = LabelFrame(master, text=" Rank list")
-        # self.helpLf.grid(row=1, column=9, columnspan=2, rowspan=8, \
-        #             sticky='NS', padx=5, pady=5)
-        # self.helpLbl = Label(self.helpLf, text="Here rank list will be shown")
-        # self.helpLbl.grid(row=0)
-        #
-        # for i in range(5):
-        #     self.q=i
-        #     self.stepOne.buttonIn = Button(self.stepOne, text = "Problem "+str(i+1),command=partial(self.solutionFile,i))
-        #     self.stepOne.buttonIn.grid(row=6+i, column=0, sticky=W+E)
-        #     self.stepOne.buttonOut = Button(self.stepOne, text = "Submit it".format(i),command=partial(self.submitIt,i))
-        #     self.stepOne.buttonOut.grid(row=6+i, column=1, sticky=W+E)
 
     def homeFunction(self):
         print("back a ja ga")
@@ -174,22 +156,23 @@ class Application(Frame):
         str2=str(self.CodeArea.get(0.0,END))
         b_file=open(filename,"w")
         b_file.write(str2)
-
+        b_file.close()
+        print(str2)
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-
+        l='//'+str(Roll_number)+ ' ' +str(p)+'\r\n'
+        s.send(l.encode('ascii'))
         with open(filename, 'rb') as f:
              print ('file opened')
              while True:
 
                     #l=' '
                     #s.send(l.encode('ascii'))
-                    l='//'+Roll_number+ ' ' +str(p)+'\r\n'
-                    s.send(l.encode('ascii'))
+
                     l = f.read(BUFFER_SIZE)
                     while (l):
                         s.send(l)
-                        #print('Sent ',repr(l))
+                        print('Sent ',repr(l))
                         l = f.read(BUFFER_SIZE)
                     if not l:
                         f.close()

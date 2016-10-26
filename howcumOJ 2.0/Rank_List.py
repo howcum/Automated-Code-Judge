@@ -78,15 +78,64 @@ class Application(Frame):
         self.c.execute("SELECT * from Session where session_id=?",(str(self.now_session[0]),))
         self.akhon=self.c.fetchone()
         print(self.akhon)
-        t = SimpleTable(self.Frame4, 10,int(self.akhon[2])+2,self.akhon[0])
+        self.c.execute("SELECT * from Session_Progress where session_id=?",(str(self.now_session[0]),))
+        self.row_ache=self.c.fetchall()
+        row_sss=0
+        user=[]
+        for row in self.row_ache:
+            row_sss+=1
+            user+=str(row[1])
+        print(row_sss,str(user))
+        t = SimpleTable(self.Frame4, row_sss+1,int(self.akhon[2])+2)
         t.pack(side="top", fill="x")
         t.set(0,0,"Rank")
         t.set(0,1,"Roll")
+        it=1;
+        for row in self.row_ache:
+            it2=1
+            for col in range(int(self.akhon[2])+1):
+                pp=str(row[it2])
+                t.set(it,it2,pp)
+                it2+=1
+            it+=1
+        it=1
+
+        # for row in self.row_ache:
+        #     pp=str(row[2])
+        #     t.set(it,2,pp)
+        #     it+=1
+        #
+        # it=1
+        # for row in self.row_ache:
+        #     pp=str(row[3])
+        #     t.set(it,3,pp)
+        #     it+=1
+        #
+        #
+        # it=1
+        # for row in self.row_ache:
+        #     pp=str(row[4])
+        #     t.set(it,4,pp)
+        #     it+=1
+        #
+        #
+        # it=1
+        # for row in self.row_ache:
+        #     pp=str(row[5])
+        #     t.set(it,5,pp)
+        #     it+=1
+        #
+        # it=1
+        # for row in self.row_ache:
+        #     pp=str(row[6])
+        #     t.set(it,6,pp)
+        #     it+=1
 
         for i in range(int(self.akhon[2])):
             t.set(0,i+2,"problem "+ str(i+1))
 
-
+        self.conn.commit()
+        self.conn.close()
 
         self.Frame2=LabelFrame(master,bg="light blue")
         self.Frame2.pack(side="left",expand=TRUE,pady=10,fill="y")

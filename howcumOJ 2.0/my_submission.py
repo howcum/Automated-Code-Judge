@@ -68,13 +68,48 @@ class Application(Frame):
         self.Frame4=Frame(master,bg="light blue")
         self.Frame4.pack(side="top",expand=TRUE,pady=10,fill="y")
 
-        t = SimpleTable(self.Frame4, 10,4)
-        t.pack(side="top", fill="x")
-        t.set(0,0,"Hello, world")
 
+        #t.set(0,0,"Hello, world")
+
+        self.conn = sqlite3.connect('mydatabase.db')
+        self.c = self.conn.cursor()
+
+        self.c.execute("SELECT session_id from NowRunning where p=1")
+        self.now_session=self.c.fetchone()
+        print(self.now_session[0])
+
+        self.c.execute("SELECT * from Session where session_id=?",(str(self.now_session[0]),))
+        self.akhon=self.c.fetchone()
+        print(self.akhon)
+        t = SimpleTable(self.Frame4, 2,int(self.akhon[2])+2)
+        t.pack(side="top", fill="x")
+        self.c.execute("SELECT * from Session_Progress where session_id=? and roll_number=?",(str(self.now_session[0]),Student_roll))
+        self.row_ache=self.c.fetchone()
+        print(self.row_ache)
+        # row_sss=0
+        # user=[]
+        # for row in self.row_ache:
+        #     row_sss+=1
+        #     user+=str(row[1])
+        # print(row_sss,str(user))
+        # t = SimpleTable(self.Frame4, 2,int(self.akhon[2])+2)
+        # t.pack(side="top", fill="x")
+        t.set(0,0,"My submission")
+        t.set(0,1,"Roll")
+        t.set(1,0,"1")
+        t.set(1,1,str(self.row_ache[1]))
+        it=2
+        for i in range(int(self.akhon[2])):
+            t.set(1,it,self.row_ache[it])
+            it+=1
+
+        for i in range(int(self.akhon[2])):
+            t.set(0,i+2,"problem "+ str(i+1))
         self.Frame2=LabelFrame(master,bg="light blue")
         self.Frame2.pack(side="left",expand=TRUE,pady=10,fill="y")
 
+        self.conn.commit()
+        self.conn.close()
 
 
 
@@ -99,6 +134,6 @@ def call(u,v):
     app.mainloop()
 
 if __name__ == '__main__':
-    call("howcum","201314021")
+    call("howcum","201314025")
 else:
     print("baje")
