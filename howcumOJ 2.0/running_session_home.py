@@ -8,6 +8,7 @@ import tkinter.scrolledtext as tkst
 import Rank_List
 import my_submission
 import sqlite3
+from tkinter import messagebox
 
 TCP_IP = 'localhost'
 TCP_PORT = 9001
@@ -175,7 +176,7 @@ class Application(Frame):
         print('Successfully send the file')
         s.close()
         print('connection closed')
-
+        messagebox.showinfo("title","Successfully Submitted!!! See My Submission to see the verdict")
         pass
 
 

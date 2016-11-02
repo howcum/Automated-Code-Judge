@@ -43,9 +43,6 @@ class Application(Frame):
         self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
 
-        self.bckButton=Button(self.Frame1,text="Profile")
-        self.bckButton.pack(side="right",padx=20)
-
         self.heading= Label(self.Frame1,text="AUTOMATED CODE JUDGE!!",font=100)
         self.heading.pack(side="top",pady=10)
 
@@ -76,6 +73,7 @@ class Application(Frame):
         t.pack(side="top", fill="x")
         t.set(0,0,"Rank")
         t.set(0,1,"Roll")
+        t.set(1,0,"1")
         it=1;
         for row in self.row_ache:
             it2=1

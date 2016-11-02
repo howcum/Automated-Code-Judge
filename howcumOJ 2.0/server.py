@@ -146,7 +146,7 @@ class ClientThread(Thread):
         if id_exists:
             self.c.execute("SELECT marks from Course_Progress where course_id=? and roll_num=?",(cd,r))
             self.now=self.c.fetchone()
-            update=int(self.now)+10
+            update=int(self.now[0])+10
             self.c.execute("UPDATE Course_Progress SET marks = ? where course_id=? and roll_num=?",(update,cd,r))
         else:
             print("***********************")
@@ -202,4 +202,4 @@ def Main_server(CC_ID,SS_ID,TIME):
 
 
 if __name__ == '__main__':
-    Main_server("3052016","30520162",120)
+    Main_server("3062016","30620161",120)

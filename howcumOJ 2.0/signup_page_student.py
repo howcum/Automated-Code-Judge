@@ -3,7 +3,7 @@ from tkinter import *
 import sqlite3
 import login_page_student
 from tkinter import messagebox
-
+import student_home
 
 class Application(Frame):
     def __init__(self,master=NONE):
@@ -35,11 +35,11 @@ class Application(Frame):
         # username.place(x=200,y=200)
         self.entrname.pack()
 
-        self.username = Label(self.Frame2,text="Username",bg='cyan',font=("Helvetica",16))
-        self.entusername=Entry(self.Frame2,bg='white',font=("Helvetica",16))
-        self.username.pack()
-        # username.place(x=200,y=200)
-        self.entusername.pack()
+        # self.username = Label(self.Frame2,text="Username",bg='cyan',font=("Helvetica",16))
+        # self.entusername=Entry(self.Frame2,bg='white',font=("Helvetica",16))
+        # self.username.pack()
+        # # username.place(x=200,y=200)
+        # self.entusername.pack()
 
         self.password = Label(self.Frame2,text="Password",bg='cyan',font=("Helvetica",16))
         self.entpassword=Entry(self.Frame2,bg='white',font=("Helvetica",16))
@@ -64,14 +64,17 @@ class Application(Frame):
 
     def submit(self):
         print("clicked!!")
-        uname_=str(self.entusername.get())
+
         name_=str(self.entrname.get())
         pass_=str(self.entpassword.get())
         roll_=str(self.rollText.get())
+        uname_=roll_
         self.conn=sqlite3.connect('mydatabase.db')
         try:
             self.conn.execute("INSERT INTO Student (username, password, Name,roll) \
             VALUES (?,?,?,?)",(uname_,pass_,name_,roll_));
+            self.master.destroy()
+            student_home.call(roll_,name_)
 
         except sqlite3.IntegrityError:
             print('ERROR: ID already exists in PRIMARY KEY column {}'.format(uname_))

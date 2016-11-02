@@ -57,6 +57,8 @@ class Application(Frame):
         try:
             self.conn.execute("INSERT INTO Teacher (username, password, Name) \
             VALUES (?,?,?)",(uname_,pass_,name_))
+            self.master.destroy()
+            teacher_home.call(uname_)
 
         except sqlite3.IntegrityError:
             self.master.withdraw()
@@ -65,7 +67,7 @@ class Application(Frame):
 
         self.conn.commit()
         self.conn.close()
-        teacher_home.call(uname_)
+
         pass
 
     def bck(self):
