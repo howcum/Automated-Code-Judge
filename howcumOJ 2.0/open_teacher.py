@@ -3,17 +3,16 @@ __author__ = 'howcum'
 from tkinter import *
 import login_page
 import signup_page
+from tkinter import messagebox
 
 root = Tk()
 
 def login():
     root.destroy()
-    login_page.cnt=login_page.cnt+1;
     login_page.func()
 
 def signup():
     root.destroy()
-    signup_page.cnt=signup_page.cnt+1;
     signup_page.func1()
 
 root.geometry("1000x500")

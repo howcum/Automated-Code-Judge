@@ -15,13 +15,9 @@ class Application(Frame):
 
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.homeFunction)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
-
-        self.bckButton=Button(self.Frame1,text="Profile")
-        self.bckButton.pack(side="right",padx=10)
 
         self.heading= Label(self.Frame1,text="AUTOMATED CODE JUDGE!!",font=100)
         self.heading.pack(side="top",pady=10)
@@ -45,16 +41,14 @@ class Application(Frame):
         self.YearText = Entry(self.stepOne)
         self.YearText.pack(pady=10)
 
-
         self.SubmitBtn= Button(self.stepOne,text="Create this Course!!",command=partial(self.createIt,2))
         self.SubmitBtn.pack(pady=20)
 
 
 
     def homeFunction(self):
-        print("back a ja ga")
         self.master.destroy()
-        teacher_home.call("hello")
+        teacher_home.call(teachers_name)
         pass
 
     def createIt(self,p):
@@ -66,12 +60,12 @@ class Application(Frame):
         j_st='201314025'
         try:
             self.conn.execute("INSERT INTO Course (course_id, course_code, year,joined_student) \
-            VALUES (?,?,?,?)",(c_id,c_code,y_year,j_st));
-                #format(tn=table_name, idf=id_column, cn=column_name))
+            VALUES (?,?,?,?)",(c_id,c_code,y_year,j_st))
+            msg=messagebox.showinfo('',"Course Successfully Created!!")
 
         except sqlite3.IntegrityError:
             msg=messagebox.showinfo('',"Course already exists")
-            print('ERROR: ID already exists in PRIMARY KEY column {}'.format(c_id))
+            print('ERROR: ID already exists in PRIMARY KEY column {}')
 
         self.conn.commit()
         self.conn.close()
@@ -89,6 +83,6 @@ def call(u):
     app.mainloop()
 
 if __name__ == '__main__':
-    call("hello")
+    call("howcum")
 else:
     print("baje")

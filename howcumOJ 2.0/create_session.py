@@ -6,10 +6,35 @@ from tkinter import filedialog
 import server
 import sqlite3
 import re
+import tkinter as tk
 from tkinter import messagebox
 teachers_name = NONE
 now_run_korche=NONE
 TIMETABLE=0
+
+class SimpleTable(tk.Frame):
+    def __init__(self, parent, rows=10, columns=2):
+        # use black background so it "peeks through" to
+        # form grid lines
+        tk.Frame.__init__(self, parent, background="black")
+        self._widgets = []
+        for row in range(rows):
+            current_row = []
+            for column in range(columns):
+                label = tk.Button(self, text="File",
+                                 borderwidth=0, width=10)
+                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                current_row.append(label)
+
+            self._widgets.append(current_row)
+
+        for column in range(columns):
+            self.grid_columnconfigure(column, weight=1)
+
+    def set(self, row, column, value):
+        widget = self._widgets[row][column]
+        widget.configure(text=value)
+
 
 class Application(Frame):
     def __init__(self, master=NONE):
@@ -18,13 +43,9 @@ class Application(Frame):
 
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.homeFunction)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
-
-        self.bckButton=Button(self.Frame1,text="Profile")
-        self.bckButton.pack(side="right",padx=10)
 
         self.heading= Label(self.Frame1,text="AUTOMATED CODE JUDGE!!",font=100)
         self.heading.pack(side="top",pady=10)
@@ -32,20 +53,16 @@ class Application(Frame):
         self.welcome= Label(self.Frame1,text="Welcome "+teachers_name+" !",font=30)
         self.welcome.pack(side="bottom",pady=10)
 
-        # self.stepZero = LabelFrame(master, text="AUTOMATED CODE JUDGE!!")
-        # self.stepZero.grid(row=0, columnspan=7, sticky='WE', \
-        #                    padx=5, pady=5, ipadx=5, ipady=5)
-        #
-        # self.homeBtn = Button(self.stepZero, text="home", command=self.homeFunction)
-        # self.homeBtn.grid(row=0, columnspan=7, sticky='WE')
-
         self.stepOne = LabelFrame(master, text=" Enter Details: ")
         self.stepOne.pack(side="left",fill="both",padx=30,ipadx=20,expand=TRUE)
 
         self.helpLf = LabelFrame(master, text=" SELECT INPUT OUTPUT FILE ")
         self.helpLf.pack(side="left",fill="both",padx=30,ipadx=20,expand=TRUE)
-        self.helpLbl = Label(self.helpLf, text="Help will come - ask for it.")
+        self.helpLbl = Label(self.helpLf, text="Fill Out the primary details")
         self.helpLbl.pack()
+
+        self.helpLf1 = LabelFrame(master, text=" SELECTED FILES ")
+        self.helpLf1.pack(side="left",fill="both",ipadx=20,expand=TRUE)
 
         self.courseCodeLbl = Label(self.stepOne, text="Course Code:")
         self.courseCodeLbl.pack()
@@ -75,14 +92,6 @@ class Application(Frame):
         self.SubmitBtn = Button(self.stepOne, text="Submit!!", command=self.SubmitNow)
         self.SubmitBtn.pack(pady=10)
 
-
-
-
-
-
-
-
-
     def SubmitNow(self):
         TIMETABLE=int(self.timeText.get())
         print(TIMETABLE)
@@ -103,9 +112,7 @@ class Application(Frame):
         self.c = self.conn.cursor()
         self.c.execute('SELECT joined_student from Course where course_id= ?',(c_id,))
         self.now = self.c.fetchone()
-        # print(self.now)
         string = str(self.now)
-        # print([x.strip() for x in string.split("',)('")])
         res=''
         cnt=0
 
@@ -140,16 +147,6 @@ class Application(Frame):
 
         self.conn.execute("INSERT INTO Problems (course_id,session_id,NP,p1,p2,p3,p4,p5) VALUES(?,?,?,?,?,?,?,?)",(c_id,s_id,n_p,res,res,res,res,res))
 
-        # self.c=self.conn.cursor()
-        #
-        # self.c.execute('SELECT joined_student from Course where course_id= ?',(c_id,))
-        # self.now=self.c.fetchone()
-        #
-        # self.sp=[]
-        # self.sp.split("',)(")
-        # for st in self.sp:
-        #     print(st)
-
         self.conn.commit()
         self.conn.close()
 
@@ -180,6 +177,8 @@ class Application(Frame):
         print(str1)
         b_file.write(str1)
         a_file.close()
+        self.helpLf1.selectedPS = Button(self.helpLf1, text=str(filename))
+        self.helpLf1.selectedPS.pack(pady=5)
         pass
 
     def inButton(self, p):
@@ -195,6 +194,8 @@ class Application(Frame):
         print(str1)
         b_file.write(str1)
         a_file.close()
+        self.helpLf1.selectedIN = Button(self.helpLf1, text=str(filename))
+        self.helpLf1.selectedIN.pack(pady=5)
         pass
 
     def outButton(self, p):
@@ -209,19 +210,17 @@ class Application(Frame):
         print(str1)
         b_file.write(str1)
         a_file.close()
+        self.helpLf1.selectedOUT = Button(self.helpLf1, text=str(filename))
+        self.helpLf1.selectedOUT.pack(pady=5)
         pass
 
     def homeFunction(self):
-        print("back a ja ga")
         self.master.destroy()
         teacher_home.call(teachers_name)
         pass
 
     def runNow(self):
-        print("Run kor na vai")
-
         now_run_korche=self.SS_ID
-
         self.conn=sqlite3.connect('mydatabase.db')
         self.c=self.conn.cursor()
         print(now_run_korche)
@@ -235,14 +234,10 @@ class Application(Frame):
         messagebox.showinfo("title","Session is Running!!!")
         self.master.destroy()
         server.Main_server(self.CC_ID,self.SS_ID,TIMETABLE)
-
         pass
-
-        # #self.conn=sqlite3.connect('mydatabase.db')
 
 
 def call(u):
-    print("ashchi" + u)
     global teachers_name
     teachers_name = u
     root = Tk()
@@ -253,7 +248,6 @@ def call(u):
 
 
 if __name__ == '__main__':
-    print("home")
     call("hello")
 else:
     print("pepe")

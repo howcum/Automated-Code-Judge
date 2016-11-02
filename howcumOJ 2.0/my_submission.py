@@ -19,7 +19,7 @@ class SimpleTable(tk.Frame):
         for row in range(rows):
             current_row = []
             for column in range(columns):
-                label = tk.Label(self, text="%s/%s" % (row, column),
+                label = tk.Label(self, text="NONE",
                                  borderwidth=0, width=10)
                 label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row.append(label)
@@ -38,26 +38,11 @@ class Application(Frame):
         Frame.__init__(self,master)
         self.master.title("My Submission!!")
 
-        # self.stepZero=LabelFrame(master,text="AUTOMATED CODE JUDGE!!")
-        # self.stepZero.grid(row=0, columnspan=7, sticky='WE', \
-        #              padx=5, pady=5, ipadx=5, ipady=5)
-
-        # self.homeBtn=Button(self.stepZero,text="home",command=self.homeFunction)
-        # self.homeBtn.grid(row=0,columnspan=7,sticky='WE')
-
-        # self.stepOne = LabelFrame(master, text=" List of Courses: ")
-        # self.stepOne.grid(row=1, columnspan=7, sticky='W', \
-        #              padx=5, pady=5, ipadx=5, ipady=5)
-
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.homeFunction)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
-
-        self.bckButton=Button(self.Frame1,text="Profile")
-        self.bckButton.pack(side="right",padx=20)
 
         self.heading= Label(self.Frame1,text="AUTOMATED CODE JUDGE!!",font=100)
         self.heading.pack(side="top",pady=10)
@@ -68,32 +53,18 @@ class Application(Frame):
         self.Frame4=Frame(master,bg="light blue")
         self.Frame4.pack(side="top",expand=TRUE,pady=10,fill="y")
 
-
-        #t.set(0,0,"Hello, world")
-
         self.conn = sqlite3.connect('mydatabase.db')
         self.c = self.conn.cursor()
 
         self.c.execute("SELECT session_id from NowRunning where p=1")
         self.now_session=self.c.fetchone()
-        print(self.now_session[0])
 
         self.c.execute("SELECT * from Session where session_id=?",(str(self.now_session[0]),))
         self.akhon=self.c.fetchone()
-        print(self.akhon)
         t = SimpleTable(self.Frame4, 2,int(self.akhon[2])+2)
         t.pack(side="top", fill="x")
         self.c.execute("SELECT * from Session_Progress where session_id=? and roll_number=?",(str(self.now_session[0]),Student_roll))
         self.row_ache=self.c.fetchone()
-        print(self.row_ache)
-        # row_sss=0
-        # user=[]
-        # for row in self.row_ache:
-        #     row_sss+=1
-        #     user+=str(row[1])
-        # print(row_sss,str(user))
-        # t = SimpleTable(self.Frame4, 2,int(self.akhon[2])+2)
-        # t.pack(side="top", fill="x")
         t.set(0,0,"My submission")
         t.set(0,1,"Roll")
         t.set(1,0,"1")
@@ -114,7 +85,6 @@ class Application(Frame):
 
 
     def homeFunction(self):
-        print("back a ja ga")
         self.master.destroy()
         running_session_home.call(Student_Name,Student_roll)
         pass

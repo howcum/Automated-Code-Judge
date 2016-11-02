@@ -2,21 +2,18 @@ __author__ = 'howcum'
 from tkinter import *
 import sqlite3
 import student_home
-
+from tkinter import messagebox
 cnt=0
 
 class Application(Frame):
     def __init__(self,master=NONE):
         Frame.__init__(self,master)
         self.master.title("Login!!")
-        #self.Frame1=Frame(master,bg="blue")
-        self.conn=sqlite3.connect('mydatabase.db')
 
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.bck)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.bck)
         self.homeBtn.pack(side="left",padx=20)
 
         self.bckButton=Button(self.Frame1,text="Profile")
@@ -45,14 +42,13 @@ class Application(Frame):
         self.login_btn = Button(self.Frame2,command=self.submit,text="Login")
         self.login_btn.pack()
 
-        # self.back = Button(master,command=self.bck,text="back")
-        # self.back.grid()
 
     def submit(self):
         print("clicked!!")
         uname_=str(self.entusername.get())
 
         pass_=str(self.entpassword.get())
+        self.conn=sqlite3.connect('mydatabase.db')
         try:
             self.c=self.conn.cursor()
             self.c.execute("SELECT * from Student WHERE username = ? AND password= ?",(uname_,pass_));
@@ -60,23 +56,19 @@ class Application(Frame):
             if id_exists:
                 print("welcome!!")
                 self.master.destroy()
-                student_home.call(uname_)
+                student_home.call(uname_,str(id_exists[2]))
             else:
-                print("jao ghure asho")
-                #format(tn=table_name, idf=id_column, cn=column_name))
+                messagebox.showinfo("message box","ID or Password incorrect!!")
 
         except sqlite3.IntegrityError:
-            print('ERROR: ID already exists in PRIMARY KEY column {}'.format(id_column))
+            print('ERROR: login error')
 
         self.conn.commit()
         self.conn.close()
-        #print(str(name_)+ ' ' + str(uname_)+ ' '+ str(pass_))
-
         pass
 
     def bck(self):
         self.master.destroy()
-        # login_page_.func()
         pass
 
 
@@ -89,10 +81,7 @@ def func():
 
 
 if __name__ == '__main__':
-    print("hello")
+
     func()
 else:
     print("login")
-    # root=Tk()
-    # root.geometry("1000x500")
-    # root.mainloop()

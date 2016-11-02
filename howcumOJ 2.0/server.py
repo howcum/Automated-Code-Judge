@@ -180,21 +180,21 @@ def Main_server(CC_ID,SS_ID,TIME):
         # print(time.time(),future)
         (conn, (ip,port)) = tcpsock.accept()
         print ('Got connection from ', (ip,port))
-        if time.time()<future:
-            newthread = ClientThread(ip,port,conn)
-            newthread.start()
-            threads.append(newthread)
-        else:
-            conn=sqlite3.connect('mydatabase.db')
-            c=conn.cursor()
-
-            try:
-                c.execute("UPDATE NowRunning SET session_id =? where p=1",("00000000",))
-            except:
-                print("update hocche na")
-            #self.master.destroy()
-            conn.commit()
-            conn.close()
+        # if time.time()<future:
+        newthread = ClientThread(ip,port,conn)
+        newthread.start()
+        threads.append(newthread)
+        # else:
+        #     conn=sqlite3.connect('mydatabase.db')
+        #     c=conn.cursor()
+        #
+        #     try:
+        #         c.execute("UPDATE NowRunning SET session_id =? where p=1",("00000000",))
+        #     except:
+        #         print("update hocche na")
+        #     #self.master.destroy()
+        #     conn.commit()
+        #     conn.close()
 
 
     for t in threads:
@@ -202,4 +202,4 @@ def Main_server(CC_ID,SS_ID,TIME):
 
 
 if __name__ == '__main__':
-    Main_server("3022016","30220162",120)
+    Main_server("3052016","30520162",120)

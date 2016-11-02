@@ -7,6 +7,7 @@ import socket
 import tkinter.scrolledtext as tkst
 import Rank_List
 import my_submission
+import sqlite3
 
 TCP_IP = 'localhost'
 TCP_PORT = 9001
@@ -23,13 +24,9 @@ class Application(Frame):
 
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.homeFunction)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
-
-        self.bckButton=Button(self.Frame1,text="Profile")
-        self.bckButton.pack(side="right",padx=20)
 
         self.heading= Label(self.Frame1,text="AUTOMATED CODE JUDGE!!",font=100)
         self.heading.pack(side="top",pady=10)
@@ -56,9 +53,28 @@ class Application(Frame):
         self.showP=Label(self.midInleftFrame,text="Problems")
         self.showP.pack()
 
-        for i in range(5):
+        self.conn=sqlite3.connect('mydatabase.db')
+        self.c=self.conn.cursor()
+        s_id=[]
+        try:
+            self.c.execute("SELECT * from NowRunning where p=1")
+            self.nppp=self.c.fetchone()
+            s_id=str(self.nppp[0])
+            print(s_id)
+        except:
+            print("ekhane")
+        #self.master.destroy()
+
+        self.c.execute('SELECT NP from Session where session_id=?',(s_id,))
+        self.temp=self.c.fetchone()
+        self.cnt=int(self.temp[0])
+        print("cnt",self.cnt)
+        self.conn.commit()
+        self.conn.close()
+
+        for i in range(self.cnt):
             self.midInleftFrame.problemBtn=Button(self.midInleftFrame,text="Problem "+ str(i+1),command=partial(self.ProblemShow, i))
-            self.midInleftFrame.problemBtn.pack(side="left")
+            self.midInleftFrame.problemBtn.pack(side="left",padx=20,pady=20)
 
         self.Frame5=LabelFrame(master,bg="light blue",text="Code Editor: ")
         self.Frame5.pack(side="right",expand=FALSE,pady=10,fill="y",padx=20)
@@ -68,11 +84,7 @@ class Application(Frame):
 
         filename="Problem0.txt"
         a_file = open(filename, "r")
-        #ext = str(p)
-        #b_file = open("problem" + ext + ".txt", "w")
         str1 = a_file.read()
-        print(str1)
-        #b_file.write(str1)
         a_file.close()
 
         self.ProblemArea.insert(INSERT,str1)
@@ -104,15 +116,8 @@ class Application(Frame):
         filename="problem"+str(p)+".txt"
         a_file = open(filename, "r")
         NOW_OPEN=p
-        #ext = str(p)
-        #b_file = open("problem" + ext + ".txt", "w")
         str1 = a_file.read()
-        print(str1)
-        #b_file.write(str1)
         a_file.close()
-        # self.ProblemArea.destroy()
-        # self.ProblemArea = tkst.ScrolledText(self.Frame4)
-        # self.ProblemArea.pack()
         self.ProblemArea.edit_undo()
         self.ProblemArea.insert(INSERT,str1)
         pass
@@ -124,16 +129,14 @@ class Application(Frame):
 
 
     def homeFunction(self):
-        print("back a ja ga")
         self.master.destroy()
-        student_home.call("hello")
+        student_home.call(Roll_number,Student_name)
         pass
 
     def solutionFile(self,p):
         print(p)
         print("file selected!!")
         filename =  filedialog.askopenfilename(initialdir = "E:/Images",title = "choose your file",filetypes = (("cpp","*.cpp"),("all files","*.*")))
-        print(filename)
         a_file = open(filename,"r")
         ext=str(p)
         b_file=open("solution"+ext+".cpp","w")
@@ -141,23 +144,18 @@ class Application(Frame):
         print(str1)
         b_file.write(str1)
         a_file.close()
-        #filename="solution"+str(p)+".cpp"
 
         self.CodeArea.edit_undo()
         self.CodeArea.insert(INSERT,str1)
-        #b_file=open(filename,"w")
-        #b_file.write(str2)
         pass
 
     def submitIt(self,p):
-        print("submit koro"+str(p))
         filename="solution"+str(p)+".cpp"
 
         str2=str(self.CodeArea.get(0.0,END))
         b_file=open(filename,"w")
         b_file.write(str2)
         b_file.close()
-        print(str2)
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
         l='//'+str(Roll_number)+ ' ' +str(p)+'\r\n'
@@ -165,10 +163,6 @@ class Application(Frame):
         with open(filename, 'rb') as f:
              print ('file opened')
              while True:
-
-                    #l=' '
-                    #s.send(l.encode('ascii'))
-
                     l = f.read(BUFFER_SIZE)
                     while (l):
                         s.send(l)
@@ -176,14 +170,9 @@ class Application(Frame):
                         l = f.read(BUFFER_SIZE)
                     if not l:
                         f.close()
-                        #s.send(l)
-
                         s.close()
                         break
-
         print('Successfully send the file')
-        # data = s.recv(BUFFER_SIZE)
-        # print('data=%s', (data))
         s.close()
         print('connection closed')
 
@@ -191,7 +180,6 @@ class Application(Frame):
 
 
 def call(u,v):
-    print(u+" again")
     global Roll_number
     global Student_name
     Student_name=u
@@ -203,6 +191,6 @@ def call(u,v):
     app.mainloop()
 
 if __name__ == '__main__':
-    call("howcum","201314025")
+    call("test","201314010")
 else:
      print("hello")

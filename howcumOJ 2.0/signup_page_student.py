@@ -1,22 +1,19 @@
 __author__ = 'howcum'
 from tkinter import *
 import sqlite3
-import open_student
+import login_page_student
+from tkinter import messagebox
 
 
 class Application(Frame):
     def __init__(self,master=NONE):
         Frame.__init__(self,master)
         self.master.title("Sign Up now!!")
-        #self.Frame1=Frame(master,bg="blue")
-        self.conn=sqlite3.connect('mydatabase.db')
-
 
         self.Frame1=LabelFrame(master,bg="#3b5998")
         self.Frame1.pack(side="top", fill="x", expand=FALSE)
-        #self.Frame1.grid(row = 0, column = 0, rowspan = 3, columnspan = 2, sticky = W+E+N+S)
 
-        self.homeBtn=Button(self.Frame1,text="home",command=self.homeFunction)
+        self.homeBtn=Button(self.Frame1,text="Back",command=self.homeFunction)
         self.homeBtn.pack(side="left",padx=20)
 
         self.bckButton=Button(self.Frame1,text="Profile")
@@ -61,9 +58,8 @@ class Application(Frame):
         # self.back.grid()
 
     def homeFunction(self):
-        print("back a ja ga")
         self.master.destroy()
-        # open_student.call()
+        login_page_student.func()
         pass
 
     def submit(self):
@@ -72,24 +68,18 @@ class Application(Frame):
         name_=str(self.entrname.get())
         pass_=str(self.entpassword.get())
         roll_=str(self.rollText.get())
+        self.conn=sqlite3.connect('mydatabase.db')
         try:
             self.conn.execute("INSERT INTO Student (username, password, Name,roll) \
             VALUES (?,?,?,?)",(uname_,pass_,name_,roll_));
-                #format(tn=table_name, idf=id_column, cn=column_name))
 
         except sqlite3.IntegrityError:
             print('ERROR: ID already exists in PRIMARY KEY column {}'.format(uname_))
+            messagebox.showinfo("message box","ID already exists!!")
 
         self.conn.commit()
         self.conn.close()
-        print(str(name_)+ ' ' + str(uname_)+ ' '+ str(pass_))
-
         pass
-
-    # def bck(self):
-    #     self.master.destroy()
-    #     login_page_student.func()
-    #     pass
 
 
 def func():

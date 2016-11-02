@@ -1,0 +1,8 @@
+Problem StateMent:
+
+you will be given two numbers. you have to output the sum of this two number.
+
+Sample Input:
+3 4
+Sample output:
+7

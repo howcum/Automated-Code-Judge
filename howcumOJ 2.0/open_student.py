@@ -8,17 +8,13 @@ root = Tk()
 
 def login():
     root.destroy()
-    #login_page_student.cnt=login_page_student.cnt+1;
     login_page_student.func()
     pass
 
 def signup():
     root.destroy()
-    #signup_page_student.cnt=signup_page_student.cnt+1;
     signup_page_student.func()
     pass
-
-
 
 root.geometry("1000x500")
 bckgnd=PhotoImage(file="1.png")
