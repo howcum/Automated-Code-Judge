@@ -73,15 +73,16 @@ class Application(Frame):
         try:
             self.conn.execute("INSERT INTO Student (username, password, Name,roll) \
             VALUES (?,?,?,?)",(uname_,pass_,name_,roll_));
+            self.conn.commit()
+            self.conn.close()
             self.master.destroy()
             student_home.call(roll_,name_)
 
         except sqlite3.IntegrityError:
             print('ERROR: ID already exists in PRIMARY KEY column {}'.format(uname_))
             messagebox.showinfo("message box","ID already exists!!")
-
-        self.conn.commit()
-        self.conn.close()
+            self.conn.commit()
+            self.conn.close()
         pass
 
 

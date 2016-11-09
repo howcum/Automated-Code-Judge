@@ -57,6 +57,8 @@ class Application(Frame):
         try:
             self.conn.execute("INSERT INTO Teacher (username, password, Name) \
             VALUES (?,?,?)",(uname_,pass_,name_))
+            self.conn.commit()
+            self.conn.close()
             self.master.destroy()
             teacher_home.call(uname_)
 
@@ -64,9 +66,8 @@ class Application(Frame):
             self.master.withdraw()
             msg=messagebox.showinfo("message box","Username already exists!!")
             print('ERROR: ID already exists in PRIMARY KEY column {}')
-
-        self.conn.commit()
-        self.conn.close()
+            self.conn.commit()
+            self.conn.close()
 
         pass
 
